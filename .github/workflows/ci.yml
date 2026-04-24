@@ -27,4 +27,4 @@ jobs:
     - name: Run Tests with Coverage
       run: |
         # Menjalankan test dan menghasilkan laporan coverage di terminal
-        pytest --cov=app tests/ --cov-report=term-missing --cov-fail-under=60
+        PYTHONPATH=. pytest --cov=app tests/ --cov-report=term-missing --cov-fail-under=60
