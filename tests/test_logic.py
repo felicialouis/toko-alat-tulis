@@ -10,12 +10,29 @@ def db():
         "penjualan": []
     }
 
-# --- KATEGORI 1: PENGUJIAN VALIDASI INPUT (CRITICAL) ---
+# --- KATEGORI 1: PENGUJIAN VALIDASI INPUT ---
 
 def test_tambah_item_nama_hanya_spasi(db):
     mgr = StationeryManager(db)
     with pytest.raises(ValueError, match="Nama barang tidak boleh kosong"):
         mgr.tambah_item("   ", 10, 2000, 5000)
+        
+def test_tambah_item_harga_jual_rugi(db):
+    # Menguji apakah sistem menolak jika harga jual < harga beli
+    mgr = StationeryManager(db)
+    with pytest.raises(ValueError, match="Harga jual tidak boleh lebih rendah dari harga beli"):
+        mgr.tambah_item("Buku Gambar", 10, 5000, 4000)
+
+def test_tambah_item_harga_negatif(db):
+    # Menguji input harga minus (tidak masuk akal secara fisik)
+    mgr = StationeryManager(db)
+    with pytest.raises(ValueError, match="Stok dan harga tidak boleh negatif"):
+        mgr.tambah_item("Penghapus", 10, -500, 1000)
+        
+def test_jual_jumlah_negatif(db):
+    mgr = StationeryManager(db)
+    with pytest.raises(ValueError, match="Jumlah penjualan minimal 1"):
+        mgr.proses_jual(1, -5)
 
 def test_tambah_item_harga_jual_sama_dengan_beli(db):
     # Kritis: Bisnis tidak untung tapi secara teknis diperbolehkan? 
@@ -42,21 +59,30 @@ def test_jual_tepat_seluruh_stok(db):
     # Stok ada 10, beli 10. Harus sisa 0.
     mgr.proses_jual(1, 10)
     assert db['barang'][0]['stok'] == 0
+    
+def test_jual_saat_stok_kosong(db):
+    mgr = StationeryManager(db)
+    # Habiskan stok Buku (ID 1) dulu
+    mgr.proses_jual(1, 10) 
+    # Sekarang coba jual lagi 1 buah
+    with pytest.raises(ValueError, match="Stok tidak cukup"):
+        mgr.proses_jual(1, 1)
 
 def test_jual_melebihi_stok_ekstrem(db):
     mgr = StationeryManager(db)
     with pytest.raises(ValueError, match="Stok tidak cukup"):
         mgr.proses_jual(1, 999999)
+        
+def test_tambah_item_stok_sangat_besar(db):
+    # Memastikan sistem kuat menangani angka besar (Stress Test ringan)
+    mgr = StationeryManager(db)
+    item = mgr.tambah_item("Kertas A4", 1000000, 50000, 60000)
+    assert item['stok'] == 1000000
 
 def test_jual_item_id_tidak_terdaftar(db):
     mgr = StationeryManager(db)
     with pytest.raises(ValueError, match="Barang tidak ditemukan"):
         mgr.proses_jual(99, 1)
-
-def test_jual_jumlah_negatif(db):
-    mgr = StationeryManager(db)
-    with pytest.raises(ValueError, match="Jumlah penjualan minimal 1"):
-        mgr.proses_jual(1, -5)
 
 # --- KATEGORI 3: PENGUJIAN INTEGRITAS DATA & PROFIT ---
 
@@ -96,6 +122,13 @@ def test_auto_increment_id_setelah_penghapusan(db):
     mgr.hapus_item(2)
     mgr.tambah_item("Barang B", 1, 1, 2) # Harus ID 2 atau ID 3? Logika kita ID max + 1.
     assert db['barang'][-1]['id'] == 2
+    
+def test_tambah_item_stok_string_angka(db):
+    # Simulasi input form web: stok dikirim sebagai teks "25"
+    mgr = StationeryManager(db)
+    item = mgr.tambah_item("Penggaris", "25", "1000", "2000")
+    assert isinstance(item['stok'], int)
+    assert item['stok'] == 25
 
 def test_jual_dengan_jumlah_string_angka(db):
     # User kadang kirim string dari form "5" bukan integer 5
