@@ -29,10 +29,7 @@ Gunakan perintah berikut untuk menjalankan seluruh test case dan melihat laporan
 ## 🎯 Strategi Pengujian
 Pengujian dilakukan dengan pendekatan Automated Testing yang mencakup:
 
-Unit Testing: Menguji logika bisnis di logic.py secara mendalam (validasi input, perhitungan profit, integritas stok). Terdapat lebih dari 15 skenario test.
-
-Integration Testing: Menguji alur aplikasi secara end-to-end melalui endpoint API/GUI di routes.py.
-
-Negative Testing: Memastikan sistem mampu menangani input salah (stok negatif, nama kosong, dll) tanpa mengalami crash.
-
-Continuous Integration: Menggunakan GitHub Actions untuk menjalankan testing secara otomatis setiap kali ada perubahan kode (push/pull request).
+1. **Unit Testing**: Menguji logika bisnis di logic.py secara mendalam (validasi input, perhitungan profit, integritas stok). Terdapat lebih dari 15 skenario test.
+2. **Integration Testing**: Menguji alur aplikasi secara end-to-end melalui endpoint API/GUI di routes.py.
+3. **Negative Testing**: Memastikan sistem mampu menangani input salah (stok negatif, nama kosong, dll) tanpa mengalami crash.
+4. **Continuous Integration**: Menggunakan GitHub Actions untuk menjalankan testing secara otomatis setiap kali ada perubahan kode (push/pull request).
