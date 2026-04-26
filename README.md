@@ -24,6 +24,7 @@ Sistem manajemen inventori sederhana untuk toko alat tulis yang dibangun menggun
 Gunakan perintah berikut untuk menjalankan seluruh test case dan melihat laporan coverage:
    ```bash
    python -m pytest --cov=app tests/ --cov-report=term-missing
+   ```
 
 ## 🎯 Strategi Pengujian
 Pengujian dilakukan dengan pendekatan Automated Testing yang mencakup:
