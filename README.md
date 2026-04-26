@@ -1,7 +1,7 @@
 # 🖊️ Sistem Informasi Alat Tulis (SIMAT)
 
 ![Build Status](https://github.com/felicialouis/toko-alat-tulis/actions/workflows/ci.yml/badge.svg)
-![Coverage](https://img.shields.io/badge/coverage-90%25-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-93%25-brightgreen)
 
 Sistem manajemen inventori sederhana untuk toko alat tulis yang dibangun menggunakan Python dan Flask. Proyek ini dibuat untuk memenuhi tugas Final Project mata kuliah Pengujian Perangkat Lunak.
 
