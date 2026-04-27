@@ -23,6 +23,31 @@ class StationeryManager:
         }
         self.barang.append(item)
         return item
+    
+    def update_barang(self, item_id, stok_baru=None, h_beli_baru=None, h_jual_baru=None):
+        for item in self.barang:
+            if item['id'] == item_id:
+                # Konversi input ke integer untuk perbandingan yang adil
+                s_new = int(stok_baru) if stok_baru is not None else item['stok']
+                b_new = int(h_beli_baru) if h_beli_baru else item['harga_beli']
+                j_new = int(h_jual_baru) if h_jual_baru else item['harga_jual']
+
+                # --- PENGECEKAN: Apakah ada perubahan? ---
+                if s_new == item['stok'] and b_new == item['harga_beli'] and j_new == item['harga_jual']:
+                    return "NO_CHANGE" # Kembalikan status khusus jika data identik
+
+                # --- VALIDASI (Jika ada perubahan) ---
+                if s_new < 0 or b_new < 0 or j_new < 0:
+                    raise ValueError("Nilai tidak boleh negatif")
+                if j_new < b_new:
+                    raise ValueError("Harga jual tidak boleh lebih rendah dari modal")
+
+                # --- EKSEKUSI UPDATE ---
+                item['stok'] = s_new
+                item['harga_beli'] = b_new
+                item['harga_jual'] = j_new
+                return True
+        return False
 
     def hapus_item(self, item_id):
         # CRUD: Delete

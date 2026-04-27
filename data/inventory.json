@@ -1,32 +1,4 @@
 {
-    "barang": [
-        {
-            "id": 1,
-            "nama": "pulpen",
-            "stok": 0,
-            "harga_beli": 2000,
-            "harga_jual": 2000
-        },
-        {
-            "id": 2,
-            "nama": "penghapus",
-            "stok": 0,
-            "harga_beli": 2000,
-            "harga_jual": 3000
-        }
-    ],
-    "penjualan": [
-        {
-            "id_barang": 1,
-            "nama_barang": "pulpen",
-            "jumlah": 1,
-            "profit": 0
-        },
-        {
-            "id_barang": 1,
-            "nama_barang": "pulpen",
-            "jumlah": 1,
-            "profit": 0
-        }
-    ]
+    "barang": [],
+    "penjualan": []
 }

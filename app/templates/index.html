@@ -21,7 +21,7 @@
             <div class="col-md-4">
                 <div class="card shadow-sm mb-4">
                     <div class="card-body">
-                        <h5 class="card-title">Tambah/Update Stok</h5>
+                        <h5 class="card-title">Tambah Stok</h5>
                         <form action="/tambah" method="POST">
                             <input type="text" name="nama" class="form-control mb-2" placeholder="Nama Alat Tulis" required>
                             <input type="number" name="stok" class="form-control mb-2" placeholder="Jumlah Stok" required>
@@ -33,7 +33,7 @@
                 </div>
                 <div class="alert alert-success shadow-sm">
                     <h5>💰 Total Profit Bersih:</h5>
-                    <h3>Rp {{ "{:,.0f}".format(total_profit) }}</h3>
+                    <h3>Rp {{ "{:,.0f}".format(total_profit if total_profit else 0) }}</h3>
                 </div>
             </div>
 
@@ -41,33 +41,55 @@
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h5 class="card-title">Daftar Inventory & Penjualan</h5>
-                        <table class="table table-hover">
+                        <table class="table table-striped">
                             <thead>
                                 <tr>
                                     <th>Nama</th>
                                     <th>Stok</th>
-                                    <th>Harga</th>
-                                    <th width="150px">Jual Qty</th>
+                                    <th>Harga Beli (Modal)</th>
+                                    <th>Harga Jual</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for item in barang %}
+                                {% for b in barang %}
                                 <tr>
-                                    <td>{{ item.nama }}</td>
-                                    <td>{{ item.stok }}</td>
-                                    <td>Rp {{ item.harga_jual }}</td>
-                                    <td>
-                                        <form action="/jual/{{ item.id }}" method="POST" class="d-flex">
-                                            <input type="number" name="qty" class="form-control form-control-sm me-1" value="1" min="1">
-                                            <button class="btn btn-sm btn-success">Jual</button>
-                                        </form>
-                                    </td>
-                                    <td>
-                                        <a href="/hapus/{{ item.id }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Hapus barang ini?')">🗑️</a>
-                                    </td>
+                                    <td><strong>{{ b.nama }}</strong></td>
+                                    
+                                    <form action="{{ url_for('main.update_item', item_id=b.id) }}" method="POST">
+                                        <td>
+                                            <input type="number" name="stok" value="{{ b.stok }}" class="form-control form-control-sm" style="width: 70px;">
+                                        </td>
+                                        <td>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text">Rp</span>
+                                                <input type="number" name="harga_beli" value="{{ b.harga_beli }}" class="form-control" style="width: 80px;">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text">Rp</span>
+                                                <input type="number" name="harga_jual" value="{{ b.harga_jual }}" class="form-control" style="width: 80px;">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button type="submit" class="btn btn-sm btn-primary" title="Update Data">Update</button>
+                                                
+                                                <button type="button" class="btn btn-sm btn-warning" onclick="jualBarang('{{ b.id }}', '{{ b.nama }}')">Jual</button>
+                                                
+                                                <a href="{{ url_for('main.hapus', item_id=b.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Hapus?')">Hapus</a>
+                                            </div>
+                                        </td>
+                                    </form>
                                 </tr>
                                 {% endfor %}
+
+                                {% if not barang %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">Belum ada barang di inventori.</td>
+                                </tr>
+                                {% endif %}
                             </tbody>
                         </table>
                     </div>
@@ -75,5 +97,33 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function jualBarang(id, nama) {
+            let jumlah = prompt(`Berapa banyak ${nama} yang terjual?`);
+            
+            // Jika user isi angka dan klik OK
+            if (jumlah !== null && jumlah !== "") {
+                if (parseInt(jumlah) <= 0) {
+                    alert("Jumlah penjualan harus lebih dari 0!");
+                    return;
+                }
+
+                // Buat form bayangan untuk kirim data ke route /jual/id
+                let form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/jual/' + id;
+
+                let inputQty = document.createElement('input');
+                inputQty.type = 'hidden';
+                inputQty.name = 'qty';
+                inputQty.value = jumlah;
+
+                form.appendChild(inputQty);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
 </body>
 </html>

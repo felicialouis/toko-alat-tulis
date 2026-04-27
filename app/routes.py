@@ -31,6 +31,33 @@ def tambah():
         flash(str(e), "danger")
     return redirect(url_for('main.index'))
 
+@main_bp.route('/update/<int:item_id>', methods=['POST'])
+def update_item(item_id):
+    db = load_data()
+    mgr = StationeryManager(db)
+    
+    # Ambil data dari form
+    stok = request.form.get('stok')
+    h_beli = request.form.get('harga_beli')
+    h_jual = request.form.get('harga_jual')
+    
+    try:
+        # PINDAHKAN INI KE DALAM TRY
+        res = mgr.update_barang(item_id, stok, h_beli, h_jual)
+        
+        if res == "NO_CHANGE":
+            flash("Tidak ada perubahan data.", "info") 
+        elif res:
+            save_data(db)
+            flash("Data berhasil diperbarui!", "success")
+        else:
+            flash("Barang tidak ditemukan.", "danger")
+            
+    except ValueError as e:
+        flash(str(e), "danger")
+        
+    return redirect(url_for('main.index'))
+
 @main_bp.route('/jual/<int:item_id>', methods=['POST'])
 def jual(item_id):
     db = load_data()

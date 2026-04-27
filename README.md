@@ -1,7 +1,7 @@
 # 🖊️ Sistem Informasi Alat Tulis (SIMAT)
 
 ![Build Status](https://github.com/felicialouis/toko-alat-tulis/actions/workflows/ci.yml/badge.svg)
-![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-98%25-brightgreen)
 
 Sistem manajemen inventori sederhana untuk toko alat tulis yang dibangun menggunakan Python dan Flask. Proyek ini dibuat untuk memenuhi tugas Final Project mata kuliah Pengujian Perangkat Lunak.
 
@@ -29,7 +29,7 @@ Gunakan perintah berikut untuk menjalankan seluruh test case dan melihat laporan
 ## 🎯 Strategi Pengujian
 Pengujian dilakukan dengan pendekatan Automated Testing yang mencakup:
 
-1. **Unit Testing**: Menguji logika bisnis di logic.py secara mendalam (validasi input, perhitungan profit, integritas stok). Terdapat lebih dari 15 skenario test.
-2. **Integration Testing**: Menguji alur aplikasi secara end-to-end melalui endpoint API/GUI di routes.py.
+1. **Unit Testing**: Menguji logika bisnis di logic.py secara mendalam (validasi input, perhitungan profit, integritas stok). Terdapat 24 skenario test.
+2. **Integration Testing**: Menguji alur aplikasi secara end-to-end melalui endpoint API/GUI di routes.py. Terdapat 10 skenario test.
 3. **Negative Testing**: Memastikan sistem mampu menangani input salah (stok negatif, nama kosong, dll) tanpa mengalami crash.
 4. **Continuous Integration**: Menggunakan GitHub Actions untuk menjalankan testing secara otomatis setiap kali ada perubahan kode (push/pull request).

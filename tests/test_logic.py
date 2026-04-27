@@ -51,6 +51,26 @@ def test_tambah_item_stok_nol(db):
     mgr = StationeryManager(db)
     item = mgr.tambah_item("Spidol", 0, 1000, 2000)
     assert item['stok'] == 0
+    
+def test_update_harga_jual_lebih_kecil_dari_beli_baru(db):
+    mgr = StationeryManager(db)
+    # Mencoba update modal jadi 5000 tapi harga jual cuma 3000
+    with pytest.raises(ValueError, match="Harga jual tidak boleh lebih rendah dari modal"):
+        mgr.update_barang(1, h_beli_baru=5000, h_jual_baru=3000)
+
+def test_update_harga_jual_tetap_tapi_modal_naik_jadi_rugi(db):
+    mgr = StationeryManager(db)
+    # Barang ID 1 harga_jual saat ini 5000. 
+    # Kita coba naikkan harga_beli jadi 6000 tanpa mengubah harga_jual.
+    with pytest.raises(ValueError, match="Harga jual tidak boleh lebih rendah dari modal"):
+        mgr.update_barang(1, h_beli_baru=6000)
+        
+def test_update_barang_tanpa_perubahan_data(db):
+    mgr = StationeryManager(db)
+    # Buku (ID 1) stok:10, beli:2000, jual:5000. 
+    # Kita kirim data yang SAMA PERSIS.
+    hasil = mgr.update_barang(1, stok_baru=10, h_beli_baru=2000, h_jual_baru=5000)
+    assert hasil == "NO_CHANGE"
 
 # --- KATEGORI 2: PENGUJIAN LOGIKA STOK & PENJUALAN ---
 
@@ -83,6 +103,12 @@ def test_jual_item_id_tidak_terdaftar(db):
     mgr = StationeryManager(db)
     with pytest.raises(ValueError, match="Barang tidak ditemukan"):
         mgr.proses_jual(99, 1)
+        
+def test_update_barang_id_tidak_terdaftar(db):
+    mgr = StationeryManager(db)
+    # Mencoba update ID 999 yang jelas tidak ada di fixture 'db'
+    hasil = mgr.update_barang(999, stok_baru=10)
+    assert hasil is False
 
 # --- KATEGORI 3: PENGUJIAN INTEGRITAS DATA & PROFIT ---
 
